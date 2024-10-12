@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Морський Бій</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(10, 40px);
+            grid-gap: 2px;
+            margin: 20px 0;
+        }
+        .cell {
+            width: 40px;
+            height: 40px;
+            background: #87CEEB;
+            cursor: pointer;
+            position: relative;
+        }
+        .hit {
+            background: red;
+        }
+        .miss {
+            background: gray;
+        }
+        #message {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Морський Бій</h1>
+    <div id="board"></div>
+    <div id="message"></div>
+    <script>
+        const board = document.getElementById('board');
+        const message = document.getElementById('message');
+        const size = 10; // Розмір поля
+        let ships = [];
+        let hits = 0;
+
+        function createBoard() {
+            for (let i = 0; i < size * size; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+                cell.addEventListener('click', () => attack(i));
+                board.appendChild(cell);
+            }
+        }
+
+        function placeShips() {
+            for (let i = 0; i < 5; i++) { // 5 кораблів
+                let position;
+                do {
+                    position = Math.floor(Math.random() * size * size);
+                } while (ships.includes(position));
+                ships.push(position);
+            }
+        }
+
+        function attack(index) {
+            if (ships.includes(index)) {
+                document.querySelector(`.cell[data-index='${index}']`).classList.add('hit');
+                hits++;
+                message.textContent = 'Попадання!';
+                if (hits === ships.length) {
+                    message.textContent = 'Ви виграли!';
+                }
+            } else {
+                document.querySelector(`.cell[data-index='${index}']`).classList.add('miss');
+                message.textContent = 'Мимо!';
+            }
+        }
+
+        createBoard();
+        placeShips();
+    </script>
+</body>
+</html>
